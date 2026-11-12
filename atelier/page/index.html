@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Atelier</title>
+<link rel="stylesheet" href="/page/app.css">
+</head>
+<body>
+<header class="bar">
+  <div class="row">
+    <select id="chapter" aria-label="Chapter"></select>
+    <span id="words" class="muted"></span>
+    <span id="save-state" class="save-state"></span>
+    <span class="spacer"></span>
+    <span id="bridge" class="bridge" title="">Bridge</span>
+  </div>
+  <div class="row">
+    <label class="switch" title="Read the style guide (style.md by default) before proposing prose"><input type="checkbox" id="s-style"> Style guide</label>
+    <span class="spacer"></span>
+    <div class="segment" role="radiogroup" aria-label="Level of help">
+      <button type="button" data-level="light" title="One edit at most, the smallest">Light</button><button type="button" data-level="suggest" title="Two or three short proposals">Suggest</button><button type="button" data-level="cowrite" title="Claude may propose whole paragraphs">Co-write</button>
+    </div>
+  </div>
+  <div class="row">
+    <input id="chapter-direction" class="direction" autocomplete="off" placeholder="Chapter direction: what you want this chapter to do — attached to every request">
+  </div>
+</header>
+
+<div id="conflict" class="banner" hidden>
+  <span>The chapter changed on disk while you were writing.</span>
+  <button type="button" id="keep-mine">Keep my version</button>
+  <button type="button" id="take-disk">Take the version on disk</button>
+</div>
+
+<main id="text" class="text" aria-label="Manuscript"></main>
+
+<div id="actions" class="actions" hidden>
+  <input id="request-direction" class="direction" autocomplete="off" placeholder="Direction for this request (optional) — or your question">
+  <button type="button" class="primary" data-action="improve" title="Ctrl+Enter — targets the selection, otherwise the paragraph">Improve</button>
+  <button type="button" data-action="variants" title="Three versions of the passage">Variants</button>
+  <button type="button" data-action="continue" title="Ctrl+Shift+Enter — a continuation after this paragraph">Continue</button>
+  <button type="button" data-action="ask" title="Asks the question written in the field">Ask</button>
+</div>
+
+<p class="help">Enter: new paragraph · Ctrl+Enter: improve · Ctrl+Shift+Enter: continue · select a piece to target it</p>
+
+<div id="toast" class="toast" role="status" hidden></div>
+<script src="/page/app.js"></script>
+</body>
+</html>

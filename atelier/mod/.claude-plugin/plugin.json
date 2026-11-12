@@ -1,0 +1,6 @@
+{
+  "name": "atelier",
+  "version": "0.1.0",
+  "description": "Bridge between the Atelier writing page (a local web page) and the conversation: requests from the page go into the conversation, Claude's proposals come back in the margin.",
+  "license": "MIT"
+}
