@@ -63,7 +63,7 @@ ACTIONS = {
     "retry": "Retry",
 }
 LEVELS = {"light": "light", "suggest": "suggest", "cowrite": "co-write"}
-DEFAULT_SETTINGS = {"style": True, "level": "suggest"}
+DEFAULT_SETTINGS = {"style": True, "craft": False, "tells": False, "level": "suggest"}
 
 
 def _truncate(text: str, n: int = 700) -> str:
@@ -87,10 +87,11 @@ def prompt(d: dict) -> str:
     if d.get("chapter_direction"):
         lines.append(f"Chapter direction: {d['chapter_direction'].strip()}")
     lines.append(
-        f"Settings: style guide {_on(s['style'])} · level "
-        f"{LEVELS.get(s['level'], s['level'])}"
+        f"Settings: style guide {_on(s['style'])} · craft rules {_on(s['craft'])} · "
+        f"AI tells {_on(s['tells'])} · level {LEVELS.get(s['level'], s['level'])}"
     )
-    if s["style"] and d.get("style_guide"):
+    # The craft-rules and ai-tells skills check against the style guide too.
+    if (s["style"] or s["craft"] or s["tells"]) and d.get("style_guide"):
         lines.append(f"Style guide: {d['style_guide']}")
     if d.get("excerpt"):
         lines.append(f"Target excerpt: “{d['excerpt'].strip()}”")

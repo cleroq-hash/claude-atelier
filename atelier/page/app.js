@@ -51,7 +51,8 @@ const st = {
   applied: new Map(), // applied proposal → what is needed to undo it
   cards: new Map(),   // card id → { sig, node }: a card being edited is not redrawn
 };
-const settings = { style: true, level: "suggest", ...load("atelier.settings", {}) };
+const settings = { style: true, craft: false, tells: false, level: "suggest",
+                   ...load("atelier.settings", {}) };
 
 function kind(b) {
   const t = b.trim();
@@ -601,9 +602,11 @@ async function loadChapter(id, { keep = false } = {}) {
 }
 
 function wireSettings() {
-  const sw = $("#s-style");
-  sw.checked = !!settings.style;
-  sw.addEventListener("change", () => { settings.style = sw.checked; store("atelier.settings", settings); reportCurrent(); });
+  for (const [key, sel] of [["style", "#s-style"], ["craft", "#s-craft"], ["tells", "#s-tells"]]) {
+    const sw = $(sel);
+    sw.checked = !!settings[key];
+    sw.addEventListener("change", () => { settings[key] = sw.checked; store("atelier.settings", settings); reportCurrent(); });
+  }
   const seg = document.querySelectorAll(".segment button");
   const paint = () => seg.forEach(b => b.setAttribute("aria-pressed", String(b.dataset.level === settings.level)));
   seg.forEach(b => b.addEventListener("click", () => {

@@ -129,7 +129,7 @@ class Requests(Base):
     def request(self, **extra):
         d = {"chapter": "ch03", "block": 2, "action": "improve",
              "excerpt": "which surprised no one", "direction": "drier",
-             "settings": {"style": False}}
+             "settings": {"style": False, "craft": True}}
         d.update(extra)
         return self.a.request(d)
 
@@ -141,7 +141,7 @@ class Requests(Base):
         self.assertIn("Target excerpt: “which surprised no one”", p)
         self.assertIn("Direction: drier", p)
         self.assertIn("Chapter direction: Lucy is afraid, she does not say it", p)
-        self.assertIn("style guide off · level suggest", p)
+        self.assertIn("style guide off · craft rules on · AI tells off · level suggest", p)
         self.assertNotIn("Style guide:", p)
         self.assertIn("The train arrived ten minutes late", p)
         self.assertIn("mcp__atelier__propose", p)
@@ -151,6 +151,15 @@ class Requests(Base):
         guide.write_text("Short sentences.\n", encoding="utf-8")
         d = self.request(settings={"style": True})
         self.assertIn(f"Style guide: {guide.resolve()}", d["prompt"])
+
+    def test_craft_or_tells_alone_still_give_the_style_guide(self):
+        guide = self.tmp / "project" / "style.md"
+        guide.write_text("Short sentences.\n", encoding="utf-8")
+        d = self.request(settings={"style": False, "craft": False, "tells": True})
+        self.assertIn("AI tells on", d["prompt"])
+        self.assertIn(f"Style guide: {guide.resolve()}", d["prompt"])
+        d = self.request(settings={"style": False, "craft": False, "tells": False})
+        self.assertNotIn("Style guide:", d["prompt"])
 
     def test_retry_carries_the_previous_proposal(self):
         d = self.request(action="retry", previous="The train arrived, late.")

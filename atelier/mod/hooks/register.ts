@@ -27,6 +27,9 @@ The writer is working in the Atelier, a local page open next to the conversation
 - Reply by calling the mcp__atelier__propose tool: it places your proposals in the margin of the targeted paragraph. In the conversation, one line at most: the answer is in the margin.
 - Never modify the manuscript files yourself: the writer applies, edits or dismisses with one click.
 - "style guide on": read the file named on the "Style guide:" line (or "style_guide" in mcp__atelier__state) before writing any prose (once per session is enough if it has not changed), and write in that voice. "off", or no file: do not rely on it.
+- "craft rules on": check the targeted passage with the craft-rules skill of this plugin (atelier:craft-rules) and return what you find as notes (notes[], the rule id in "rule"). The style guide always wins over the craft rules.
+- "AI tells on": check the targeted passage with the ai-tells skill of this plugin (atelier:ai-tells) and return what you find as notes, each with its verdict (tic / your voice / your call). The style guide always wins over the grid.
+- Neither skill rewrites anything: findings go in notes; proposals only for what the action itself asks for.
 - Level: light = a single proposal, the smallest edit that serves the direction; suggest = two or three short, clearly different proposals; co-write = you may propose whole paragraphs.
 - Improve: target "selection" with the exact excerpt when a piece is selected, otherwise "paragraph". Variants: three clearly different versions of the same passage. Continue: target "after", one or two possible continuations, in the voice of the text. Free question: answer in notes, and in proposals if the question calls for them. Retry: rework the given proposal following the new direction.
 - Each proposal may carry a one-line "why". The chapter direction applies to every request; the request's own direction takes precedence.
@@ -121,7 +124,7 @@ export const register: Register = on => {
               properties: {
                 text: { type: 'string' },
                 excerpt: { type: 'string', description: 'The exact passage the note is about.' },
-                rule: { type: 'string', description: 'The rule cited (style guide section, etc.).' },
+                rule: { type: 'string', description: 'The rule cited: a craft rule id (M3), a style guide section (style.md §4), a grid section (§1), or typo.' },
               },
               required: ['text'],
             },

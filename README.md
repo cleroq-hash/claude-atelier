@@ -17,8 +17,9 @@ manuscript itself.
 
 ### Loading the mod
 
-The mod is a Claude Code plugin whose only component is a TypeScript hooks module
-(`atelier/mod/hooks/hooks.json` lists `register.ts` under `modules`). Load it for one session:
+The mod is a Claude Code plugin made of a TypeScript hooks module
+(`atelier/mod/hooks/hooks.json` lists `register.ts` under `modules`) and two skills
+(`atelier/mod/skills/`). Load it for one session:
 
 ```bash
 claude --plugin-dir path/to/claude-atelier/atelier/mod
@@ -90,6 +91,8 @@ know where to listen.
 | Request direction field | the direction for this request only |
 | Chapter direction | a direction attached to every request in the chapter |
 | Style guide switch | Claude reads the style guide before proposing prose, if the file exists |
+| Craft rules switch | Claude also checks the passage against writers' craft rules, as margin notes (see [Review skills](#review-skills)) |
+| AI tells switch | Claude also flags traces of AI writing, checked against your style guide, as margin notes |
 | Light / Suggest / Co-write | one edit, two or three proposals, or whole paragraphs |
 | Replace / Insert after | applies the proposal to the text (and saves); **Undo** takes it back |
 | Edit | edit the proposal before applying it |
@@ -98,6 +101,31 @@ know where to listen.
 From the conversation, a plain-language request about the open text ("two variants of the
 station paragraph") also lands in the margin, tagged *conversation*: Claude calls
 `mcp__atelier__state` to see what you are looking at, then `mcp__atelier__propose`.
+
+## Review skills
+
+The mod ships two skills, used when their switch is on (or when you ask for them in the
+conversation). Both **report; neither rewrites anything**. Findings come back as notes in the
+margin of the paragraph, each pointing at an exact excerpt (the **Show** button selects it)
+and naming the rule it is about. Your style guide always comes first: a rule or a pattern
+that contradicts it is not flagged.
+
+- **`craft-rules`** checks the passage against your style guide, then against ten craft
+  rules credited to writers and practitioners (`atelier/mod/skills/craft-rules/craft-rules.md`):
+  adjectives that tell the reader what to feel (M1), nouns and verbs that describe (M2),
+  writing what is there rather than what is missing (M3), the "I know" test for dialogue
+  (M4), the detail that stands for the rest (M5), dialogue as table tennis (M6), the
+  sentence that leans forward (M7), the open question at the end of a chapter (M8), the
+  first five pages (M9), and four sentence habits (M10). Each rule states its limits;
+  Claude reads them before flagging, and picks what matters rather than flagging everything.
+- **`ai-tells`** flags traces of AI writing using the Humanizer grid (26 patterns drawn from
+  Wikipedia's "Signs of AI writing") and checks each one against your style guide. Every
+  finding gets a verdict: *tic* (nothing in your guide supports it), *your voice* (your
+  guide asks for it) or *your call* (allowed, but suspicious by its density). Weak patterns
+  are flagged only in company. Without a style guide, it says so and works from the grid
+  alone.
+
+To get a rewrite, use **Improve** or **Retry…** on the passage yourself.
 
 ## How it works
 
@@ -165,6 +193,22 @@ python -m unittest atelier.tests.test_atelier
 from the repository root. They run on a made-up chapter in a temporary folder. The mod is
 checked with `claude plugin validate atelier/mod`.
 
+## Credits
+
+- The `ai-tells` skill uses the grid of [blader/humanizer](https://github.com/blader/humanizer)
+  (MIT, Copyright (c) 2025 Siqi Chen), included unchanged in
+  `atelier/mod/skills/ai-tells/humanizer-grid.md`. Its patterns come from Wikipedia's
+  ["Signs of AI writing"](https://en.wikipedia.org/wiki/Wikipedia:Signs_of_AI_writing),
+  maintained by WikiProject AI Cleanup.
+- The craft rules restate advice credited to C. S. Lewis, Ursula K. Le Guin, Ernest
+  Hemingway, David Mamet, Stephen King, Emily Henry, Ta-Nehisi Coates and Lee Child, as
+  presented by TikTok carousels from @senswriter and a video by an editor on Lee Child, and
+  by texts from Nikoleta Ivanova and Midnight Editors. The before/after examples are
+  translated from those sources and credited under each rule. The attributions come from
+  these secondary sources and have not been checked against the primary ones.
+
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+
 ## License
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE). Third-party material keeps its own license (see above).
