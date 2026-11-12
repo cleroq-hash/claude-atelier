@@ -6,7 +6,7 @@ your Claude Code conversation, and Claude's proposals come back next to the para
 changed words highlighted. You apply, edit, retry or dismiss them. Claude never writes to the
 manuscript itself.
 
-<!-- Screenshot: not available yet. Add one here, e.g. ![Atelier](docs/screenshot.png) -->
+![Atelier: a chapter of the sample story, with Claude's proposal in the margin](docs/screenshot.png)
 
 ## What you need
 
