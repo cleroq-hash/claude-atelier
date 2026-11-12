@@ -83,16 +83,16 @@ class Chapters(Base):
     def test_annexes_listed_after_and_editable(self):
         sheets = self.tmp / "project" / "notes" / "characters"
         sheets.mkdir(parents=True)
-        (sheets / "marion.md").write_bytes("# Marion\n\nShe wants.\n".encode())
+        (sheets / "harriet.md").write_bytes("# Harriet\n\nShe wants.\n".encode())
         a = Atelier(self.tmp / "project", "chapters", self.tmp / "state",
                     ["notes/characters", "missing"])
         listing = a.chapters()
-        self.assertEqual([c["id"] for c in listing], ["ch01", "ch03", "ch-final", "marion"])
+        self.assertEqual([c["id"] for c in listing], ["ch01", "ch03", "ch-final", "harriet"])
         self.assertEqual([c["annex"] for c in listing], [False, False, False, True])
-        r = a.read("marion")
-        s = a.save("marion", r["blocks"] + ["She is wrong."], r["hash"])
+        r = a.read("harriet")
+        s = a.save("harriet", r["blocks"] + ["She is wrong."], r["hash"])
         self.assertFalse(s["conflict"])
-        self.assertIn("She is wrong.", (sheets / "marion.md").read_text(encoding="utf-8"))
+        self.assertIn("She is wrong.", (sheets / "harriet.md").read_text(encoding="utf-8"))
 
     def test_path_outside_the_folder_refused(self):
         for bad in ("../ch03", "..\\x", "ch99", ""):
@@ -141,7 +141,7 @@ class Requests(Base):
         self.assertIn("Target excerpt: “which surprised no one”", p)
         self.assertIn("Direction: drier", p)
         self.assertIn("Chapter direction: Lucy is afraid, she does not say it", p)
-        self.assertIn("style guide off · craft rules on · AI tells off · level suggest", p)
+        self.assertIn("style guide off · craft rules on · AI tells off · craft handbook off · level suggest", p)
         self.assertNotIn("Style guide:", p)
         self.assertIn("The train arrived ten minutes late", p)
         self.assertIn("mcp__atelier__propose", p)
@@ -157,6 +157,10 @@ class Requests(Base):
         guide.write_text("Short sentences.\n", encoding="utf-8")
         d = self.request(settings={"style": False, "craft": False, "tells": True})
         self.assertIn("AI tells on", d["prompt"])
+        self.assertIn(f"Style guide: {guide.resolve()}", d["prompt"])
+        d = self.request(settings={"style": False, "craft": False, "tells": False,
+                                   "handbook": True})
+        self.assertIn("craft handbook on", d["prompt"])
         self.assertIn(f"Style guide: {guide.resolve()}", d["prompt"])
         d = self.request(settings={"style": False, "craft": False, "tells": False})
         self.assertNotIn("Style guide:", d["prompt"])

@@ -18,7 +18,7 @@ manuscript itself.
 ### Loading the mod
 
 The mod is a Claude Code plugin made of a TypeScript hooks module
-(`atelier/mod/hooks/hooks.json` lists `register.ts` under `modules`) and two skills
+(`atelier/mod/hooks/hooks.json` lists `register.ts` under `modules`) and three skills
 (`atelier/mod/skills/`). Load it for one session:
 
 ```bash
@@ -91,8 +91,9 @@ know where to listen.
 | Request direction field | the direction for this request only |
 | Chapter direction | a direction attached to every request in the chapter |
 | Style guide switch | Claude reads the style guide before proposing prose, if the file exists |
-| Craft rules switch | Claude also checks the passage against writers' craft rules, as margin notes (see [Review skills](#review-skills)) |
+| Craft rules switch | Claude also checks the passage against writers' craft rules, as margin notes (see [Skills](#skills)) |
 | AI tells switch | Claude also flags traces of AI writing, checked against your style guide, as margin notes |
+| Craft handbook switch | Claude advises from a novelist's craft handbook, citing its sections, as margin notes |
 | Light / Suggest / Co-write | one edit, two or three proposals, or whole paragraphs |
 | Replace / Insert after | applies the proposal to the text (and saves); **Undo** takes it back |
 | Edit | edit the proposal before applying it |
@@ -102,10 +103,10 @@ From the conversation, a plain-language request about the open text ("two varian
 station paragraph") also lands in the margin, tagged *conversation*: Claude calls
 `mcp__atelier__state` to see what you are looking at, then `mcp__atelier__propose`.
 
-## Review skills
+## Skills
 
-The mod ships two skills, used when their switch is on (or when you ask for them in the
-conversation). Both **report; neither rewrites anything**. Findings come back as notes in the
+The mod ships three skills, used when their switch is on (or when you ask for them in the
+conversation). They **report or advise; none of them rewrites anything**. Findings come back as notes in the
 margin of the paragraph, each pointing at an exact excerpt (the **Show** button selects it)
 and naming the rule it is about. Your style guide always comes first: a rule or a pattern
 that contradicts it is not flagged.
@@ -124,6 +125,15 @@ that contradicts it is not flagged.
   guide asks for it) or *your call* (allowed, but suspicious by its density). Weak patterns
   are flagged only in company. Without a style guide, it says so and works from the grid
   alone.
+- **`craft-handbook`** is a workshop manual of the novelist's craft
+  (`atelier/mod/skills/craft-handbook/handbook.md`): the vivid and continuous dream,
+  dramatic questions and suspense, desire and conflict, inner change, micro-tension,
+  attachment, promises, structure frameworks, the scene/sequel cycle, the MICE threads, point
+  of view and narrative distance, openings and endings, dialogue and exposition, revision,
+  working documents and series. Each principle is tied to its author, syntheses are marked,
+  and disagreements between schools are shown rather than settled. Claude uses it when you
+  ask for advice on a scene, a chapter, a structure or a character, and cites the section. A
+  character sheet template comes with it (`character-sheet.md`).
 
 To get a rewrite, use **Improve** or **Retry…** on the passage yourself.
 
@@ -206,6 +216,10 @@ checked with `claude plugin validate atelier/mod`.
   by texts from Nikoleta Ivanova and Midnight Editors. The before/after examples are
   translated from those sources and credited under each rule. The attributions come from
   these secondary sources and have not been checked against the primary ones.
+- The craft handbook summarises, with named sources, the published work of the authors listed
+  in its bibliography (Gardner, Lavandier, McKee, Truby, Le Guin, King, Cron, Maass,
+  Edgerton, Coyne, Swain, Snyder, Brody, Vogler, Hitchcock and Truffaut, Sanderson, Kowal,
+  Coats, among others). Ideas are summarised, not copied.
 
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
 

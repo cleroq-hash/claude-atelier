@@ -63,7 +63,8 @@ ACTIONS = {
     "retry": "Retry",
 }
 LEVELS = {"light": "light", "suggest": "suggest", "cowrite": "co-write"}
-DEFAULT_SETTINGS = {"style": True, "craft": False, "tells": False, "level": "suggest"}
+DEFAULT_SETTINGS = {"style": True, "craft": False, "tells": False, "handbook": False,
+                    "level": "suggest"}
 
 
 def _truncate(text: str, n: int = 700) -> str:
@@ -88,10 +89,11 @@ def prompt(d: dict) -> str:
         lines.append(f"Chapter direction: {d['chapter_direction'].strip()}")
     lines.append(
         f"Settings: style guide {_on(s['style'])} · craft rules {_on(s['craft'])} · "
-        f"AI tells {_on(s['tells'])} · level {LEVELS.get(s['level'], s['level'])}"
+        f"AI tells {_on(s['tells'])} · craft handbook {_on(s['handbook'])} · "
+        f"level {LEVELS.get(s['level'], s['level'])}"
     )
-    # The craft-rules and ai-tells skills check against the style guide too.
-    if (s["style"] or s["craft"] or s["tells"]) and d.get("style_guide"):
+    # The craft-rules, ai-tells and craft-handbook skills read the style guide too.
+    if (s["style"] or s["craft"] or s["tells"] or s["handbook"]) and d.get("style_guide"):
         lines.append(f"Style guide: {d['style_guide']}")
     if d.get("excerpt"):
         lines.append(f"Target excerpt: “{d['excerpt'].strip()}”")

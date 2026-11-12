@@ -51,7 +51,7 @@ const st = {
   applied: new Map(), // applied proposal → what is needed to undo it
   cards: new Map(),   // card id → { sig, node }: a card being edited is not redrawn
 };
-const settings = { style: true, craft: false, tells: false, level: "suggest",
+const settings = { style: true, craft: false, tells: false, handbook: false, level: "suggest",
                    ...load("atelier.settings", {}) };
 
 function kind(b) {
@@ -602,7 +602,7 @@ async function loadChapter(id, { keep = false } = {}) {
 }
 
 function wireSettings() {
-  for (const [key, sel] of [["style", "#s-style"], ["craft", "#s-craft"], ["tells", "#s-tells"]]) {
+  for (const [key, sel] of [["style", "#s-style"], ["craft", "#s-craft"], ["tells", "#s-tells"], ["handbook", "#s-handbook"]]) {
     const sw = $(sel);
     sw.checked = !!settings[key];
     sw.addEventListener("change", () => { settings[key] = sw.checked; store("atelier.settings", settings); reportCurrent(); });
