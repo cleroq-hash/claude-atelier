@@ -43,6 +43,50 @@ What `register.ts` assumes about its environment, read from the code:
 
 `claude plugin validate atelier/mod` checks the manifest; it does not run the module.
 
+### Inside the Claude desktop app (Code tab)
+
+This is how the author uses it every day: the page opens in the app's built-in browser pane,
+next to the conversation, and the requests land in the same conversation.
+
+1. **Load the mod in every session.** In `~/.claude/settings.json`, add the mod folder to the
+   `env` section, with an absolute path:
+
+   ```json
+   {
+     "env": {
+       "CLAUDE_CODE_PLUGIN_DIRS": "C:\\path\\to\\claude-atelier\\atelier\\mod"
+     }
+   }
+   ```
+
+   Restart the app. In a new session, Claude should have the tools `mcp__atelier__state` and
+   `mcp__atelier__propose`.
+
+2. **Declare the server** in `.claude/launch.json` at the root of the folder your session is
+   opened on (create the file if needed):
+
+   ```json
+   {
+     "version": "0.0.1",
+     "configurations": [
+       {
+         "name": "atelier",
+         "runtimeExecutable": "python",
+         "runtimeArgs": ["C:/path/to/claude-atelier/atelier",
+                         "--root", "C:/path/to/your/manuscript", "--port", "7340"],
+         "port": 7340
+       }
+     ]
+   }
+   ```
+
+3. **Open it from the conversation**: ask Claude to "start the atelier preview". It starts the
+   `atelier` configuration and opens http://127.0.0.1:7340/ in the browser pane. The page
+   shows "Claude connected" in the top right corner when the mod is loaded.
+
+To work on another manuscript, change `--root` in `launch.json` and restart the preview. Only
+one Atelier runs at a time: each server rewrites `~/.atelier/active.json`.
+
 ## Quick start
 
 From the repository root:
